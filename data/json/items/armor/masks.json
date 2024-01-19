@@ -63,6 +63,31 @@
     "armor": [ { "encumbrance": 1, "coverage": 95, "covers": [ "mouth" ] } ]
   },
   {
+    "id": "neckwarmer",
+    "type": "TOOL_ARMOR",
+    "category": "clothing",
+    "name": { "str": "neckwarmer" },
+    "description": "A synthetic fabric neckwarmer, worn over the mouth for warmth and minor protection from dust and other contaminants.  It also warm and protect your neck, throat, and the sides of your face.",
+    "weight": "50 g",
+    "volume": "250 ml",
+    "price": 600,
+    "price_postapoc": 10,
+    "use_action": {
+      "type": "transform",
+      "msg": "You adjust the %s to cover your head.",
+      "target": "neckwarmer_head",
+      "menu_text": "Cover head"
+    },
+    "material": [ "nylon" ],
+    "symbol": "[",
+    "looks_like": "scarf",
+    "color": "blue",
+    "warmth": 8,
+    "material_thickness": 0.2,
+    "environmental_protection": 2,
+    "armor": [ { "encumbrance": 1, "coverage": 95, "covers": [ "mouth" ] } ]
+  },
+  {
     "id": "bondage_mask",
     "type": "ARMOR",
     "name": { "str": "bondage mask" },
@@ -516,7 +541,49 @@
     "material_thickness": 0.5,
     "environmental_protection": 1,
     "flags": [ "FRAGILE" ],
-    "armor": [ { "encumbrance": 8, "coverage": 95, "covers": [ "head", "mouth" ] } ]
+    "armor": [ { "encumbrance": 8, "coverage": 95, "covers": [ "head", "mouth" ] } ],
+    "variant_type": "generic",
+    "variants": [
+      {
+        "id": "zombie_mask",
+        "name": { "str": "zombie mask" },
+        "description": "A flimsy leather zombie mask.  When zombies were still works of fiction.",
+        "weight": 100
+      },
+      {
+        "id": "chicken_mask",
+        "name": { "str": "chicken mask" },
+        "color": "light_gray",
+        "description": "A chicken mask that looks like a killer in Miami would wear.",
+        "weight": 30
+      },
+      {
+        "id": "green_mask",
+        "name": { "str": "green mask" },
+        "color": "green",
+        "description": "A green skinned full-face mask, much like the one from The Mask.",
+        "weight": 24
+      },
+      {
+        "id": "scream_mask",
+        "name": { "str": "Scream mask" },
+        "color": "dark_gray",
+        "description": "A white mask with a screaming face on it, much like the mask Ghostface worn in Scream, black hood included.",
+        "weight": 41
+      },
+      {
+        "id": "michael_myers_mask",
+        "name": { "str": "Michael Myers' mask" },
+        "description": "A full-head mask with hair, much like the one worn by Michael Myers in Halloween",
+        "weight": 17
+      },
+      {
+        "id": "frankenstein_mask",
+        "name": { "str": "Frankenstein's Monster mask" },
+        "description": "A full-head mask that looks like the head of Frankenstein's monster.",
+        "weight": 20
+      }
+    ]
   },
   {
     "id": "mask_plague",

@@ -423,13 +423,13 @@ TEST_CASE( "npc_talk_rules", "[npc_talk]" )
     CHECK( d.responses[0].text == "This is a basic test response." );
     talker_npc.rules.engagement = combat_engagement::ALL;
     talker_npc.rules.aim = aim_rule::SPRAY;
-    talker_npc.rules.set_flag( ally_rule::use_silent );
+    talker_npc.rules.set_flag( ally_rule::avoid_doors );
     gen_response_lines( d, 4 );
     CHECK( d.responses[0].text == "This is a basic test response." );
     CHECK( d.responses[1].text == "This is a npc engagement rule test response." );
     CHECK( d.responses[2].text == "This is a npc aim rule test response." );
     CHECK( d.responses[3].text == "This is a npc rule test response." );
-    talker_npc.rules.clear_flag( ally_rule::use_silent );
+    talker_npc.rules.clear_flag( ally_rule::avoid_doors );
 }
 
 TEST_CASE( "npc_talk_needs", "[npc_talk]" )
@@ -836,11 +836,11 @@ TEST_CASE( "npc_talk_combat_commands", "[npc_talk]" )
     gen_response_lines( d, 10 );
     CHECK( d.responses[0].text == "Change your engagement rules…" );
     CHECK( d.responses[1].text == "Change your aiming rules…" );
-    CHECK( d.responses[2].text == "Stick close to me, no matter what." );
-    CHECK( d.responses[3].text == "<ally_rule_follow_distance_request_4_text>" );
+    CHECK( d.responses[2].text == "Move freely as you need to." );
+    CHECK( d.responses[3].text == "<ally_rule_follow_distance_request_2_text>" );
     CHECK( d.responses[4].text == "Don't use ranged weapons anymore." );
-    CHECK( d.responses[5].text == "Use only silent weapons." );
-    CHECK( d.responses[6].text == "Don't use grenades anymore." );
+    CHECK( d.responses[5].text == "Don't worry about noise." );
+    CHECK( d.responses[6].text == "You can use grenades." );
     CHECK( d.responses[7].text == "Don't worry about shooting an ally." );
     CHECK( d.responses[8].text == "Hold the line: don't move onto obstacles adjacent to me." );
     CHECK( d.responses[9].text == "Never mind." );
@@ -872,70 +872,6 @@ TEST_CASE( "npc_talk_vars", "[npc_talk]" )
     CHECK( d.responses[0].text == "This is a basic test response." );
     CHECK( d.responses[1].text == "This is a u_add_var test response." );
     CHECK( d.responses[2].text == "This is a npc_add_var test response." );
-}
-
-TEST_CASE( "npc_talk_adjust_vars", "[npc_talk]" )
-{
-    dialogue d;
-    prep_test( d );
-
-    d.add_topic( "TALK_TEST_ADJUST_VARS" );
-
-    // At the starting point, the var hasn't been set or adjusted, so it should default to 0.
-    gen_response_lines( d, 11 );
-    CHECK( d.responses[0].text == "This is a basic test response." );
-    CHECK( d.responses[1].text == "This is a u_adjust_var test response that increments by 1." );
-    CHECK( d.responses[2].text == "This is a u_adjust_var test response that decrements by 1." );
-    CHECK( d.responses[3].text == "This is a npc_adjust_var test response that increments by 1." );
-    CHECK( d.responses[4].text == "This is a npc_adjust_var test response that decrements by 1." );
-    CHECK( d.responses[5].text == "This is a u_compare_var test response for == 0." );
-    CHECK( d.responses[6].text == "This is a u_compare_var test response for <= 0." );
-    CHECK( d.responses[7].text == "This is a u_compare_var test response for >= 0." );
-    CHECK( d.responses[8].text == "This is a npc_compare_var test response for == 0." );
-    CHECK( d.responses[9].text == "This is a npc_compare_var test response for <= 0." );
-    CHECK( d.responses[10].text == "This is a npc_compare_var test response for >= 0." );
-
-    // Increment the u and npc vars by 1, so that it has a value of 1.
-    talk_effect_t &effects = d.responses[1].success;
-    effects.apply( d );
-    effects = d.responses[3].success;
-    effects.apply( d );
-
-    // Now we're comparing the var, which should be 1, to our condition value which is 0.
-    gen_response_lines( d, 11 );
-    CHECK( d.responses[0].text == "This is a basic test response." );
-    CHECK( d.responses[1].text == "This is a u_adjust_var test response that increments by 1." );
-    CHECK( d.responses[2].text == "This is a u_adjust_var test response that decrements by 1." );
-    CHECK( d.responses[3].text == "This is a npc_adjust_var test response that increments by 1." );
-    CHECK( d.responses[4].text == "This is a npc_adjust_var test response that decrements by 1." );
-    CHECK( d.responses[5].text == "This is a u_compare_var test response for != 0." );
-    CHECK( d.responses[6].text == "This is a u_compare_var test response for >= 0." );
-    CHECK( d.responses[7].text == "This is a u_compare_var test response for > 0." );
-    CHECK( d.responses[8].text == "This is a npc_compare_var test response for != 0." );
-    CHECK( d.responses[9].text == "This is a npc_compare_var test response for >= 0." );
-    CHECK( d.responses[10].text == "This is a npc_compare_var test response for > 0." );
-
-    // Decrement the u and npc vars by 1 twice, so that it has a value of -1.
-    effects = d.responses[2].success;
-    effects.apply( d );
-    effects.apply( d );
-    effects = d.responses[4].success;
-    effects.apply( d );
-    effects.apply( d );
-
-    // Now we're comparing the var, which should be -1, to our condition value which is 0.
-    gen_response_lines( d, 11 );
-    CHECK( d.responses[0].text == "This is a basic test response." );
-    CHECK( d.responses[1].text == "This is a u_adjust_var test response that increments by 1." );
-    CHECK( d.responses[2].text == "This is a u_adjust_var test response that decrements by 1." );
-    CHECK( d.responses[3].text == "This is a npc_adjust_var test response that increments by 1." );
-    CHECK( d.responses[4].text == "This is a npc_adjust_var test response that decrements by 1." );
-    CHECK( d.responses[5].text == "This is a u_compare_var test response for != 0." );
-    CHECK( d.responses[6].text == "This is a u_compare_var test response for <= 0." );
-    CHECK( d.responses[7].text == "This is a u_compare_var test response for < 0." );
-    CHECK( d.responses[8].text == "This is a npc_compare_var test response for != 0." );
-    CHECK( d.responses[9].text == "This is a npc_compare_var test response for <= 0." );
-    CHECK( d.responses[10].text == "This is a npc_compare_var test response for < 0." );
 }
 
 TEST_CASE( "npc_talk_vars_time", "[npc_talk]" )
@@ -1198,8 +1134,8 @@ TEST_CASE( "npc_compare_int", "[npc_talk]" )
 
     d.add_topic( "TALK_TEST_COMPARE_INT" );
     gen_response_lines( d, expected_answers );
-    CHECK( d.responses[ 0 ].text == "This is a u_adjust_var test response that increments by 1." );
-    CHECK( d.responses[ 1 ].text == "This is an npc_adjust_var test response that increments by 2." );
+    CHECK( d.responses[ 0 ].text == "This is a math test response that increments by 1." );
+    CHECK( d.responses[ 1 ].text == "This is an math test response that increments by 2." );
     CHECK( d.responses[ 2 ].text == "This is a u_add_var time test response." );
     CHECK( d.responses[expected_answers - 2].text == "Exp of Pew, Pew is -1." );
     CHECK( d.responses[expected_answers - 1].text ==
@@ -1245,7 +1181,7 @@ TEST_CASE( "npc_compare_int", "[npc_talk]" )
     player_character.inv->add_item( item( itype_bottle_glass ) );
     player_character.inv->add_item( item( itype_bottle_glass ) );
     cata::event e = cata::event::make<event_type::character_kills_monster>(
-                        get_player_character().getID(), mon_zombie_bio_op );
+                        get_player_character().getID(), mon_zombie_bio_op, 0 );
     get_event_bus().send( e );
     player_character.magic->learn_spell( spell_test_spell_json, player_character, false );
     player_character.set_mutation( trait_test_trait ); // Give the player the spell scool test_trait
@@ -1267,8 +1203,8 @@ TEST_CASE( "npc_compare_int", "[npc_talk]" )
 
     expected_answers = 51;
     gen_response_lines( d, expected_answers );
-    CHECK( d.responses[ 0 ].text == "This is a u_adjust_var test response that increments by 1." );
-    CHECK( d.responses[ 1 ].text == "This is an npc_adjust_var test response that increments by 2." );
+    CHECK( d.responses[ 0 ].text == "This is a math test response that increments by 1." );
+    CHECK( d.responses[ 1 ].text == "This is an math test response that increments by 2." );
     CHECK( d.responses[ 2 ].text == "PC strength is five." );
     CHECK( d.responses[ 3 ].text == "PC dexterity is six." );
     CHECK( d.responses[ 4 ].text == "PC intelligence is seven." );
@@ -1313,7 +1249,7 @@ TEST_CASE( "npc_compare_int", "[npc_talk]" )
     CHECK( d.responses[ 42 ].text == "Spell level of Pew, Pew is 4." );
     CHECK( d.responses[ 43 ].text == "Spell level of highest spell is 12." );
     CHECK( d.responses[ 44 ].text == "Exp of Pew, Pew is 11006." );
-    CHECK( d.responses[ 45 ].text == "Test Proficiency learning is 5 out of 10." );
+    CHECK( d.responses[ 45 ].text == "Test Proficiency learning is 50% out of 100%." );
     CHECK( d.responses[ 46 ].text == "Test Proficiency learning done is 12 hours total." );
     CHECK( d.responses[ 47 ].text == "Test Proficiency learning is 50% learnt." );
     CHECK( d.responses[ 48 ].text == "Test Proficiency learning is 500 permille learnt." );
